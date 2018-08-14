@@ -1,12 +1,12 @@
 package co.il.nmh.easy.selenium.core.predicate;
 
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 
 import com.google.common.base.Predicate;
 
 import co.il.nmh.easy.selenium.core.wrappers.DocumentWrapper;
+import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 import co.il.nmh.easy.selenium.utils.SearchBy;
 import co.il.nmh.easy.selenium.utils.WaitCondition;
 
@@ -39,7 +39,7 @@ public class ElementNotExistPredicate implements Predicate<WebDriver>
 			actionWrapper.getElement(source, searchBy, searchValue, index, WaitCondition.ELEMENT_CREATION, 1);
 			return false;
 		}
-		catch (TimeoutException e)
+		catch (SeleniumActionTimeout e)
 		{
 			return true;
 		}

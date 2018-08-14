@@ -4,16 +4,16 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import co.il.nmh.easy.selenium.core.DriverWrapper;
+import co.il.nmh.easy.selenium.core.EasyWebDriverWait;
 import co.il.nmh.easy.selenium.core.predicate.ElementCreationInListPredicate;
 import co.il.nmh.easy.selenium.core.predicate.ElementNotExistPredicate;
 import co.il.nmh.easy.selenium.core.predicate.PageReadyPredicate;
+import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 import co.il.nmh.easy.selenium.utils.InputValidationUtils;
 import co.il.nmh.easy.selenium.utils.SearchBy;
 import co.il.nmh.easy.selenium.utils.WaitCondition;
@@ -29,38 +29,36 @@ public class DocumentWrapper extends DriverWrapper
 		super(driver);
 	}
 
-	public WebElement getElement(SearchBy searchBy, String searchValue, int index, WaitCondition waitCondition, int timeout) throws TimeoutException
+	public WebElement getElement(SearchBy searchBy, String searchValue, int index, WaitCondition waitCondition, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		return getElement(driver, searchBy, searchValue, index, waitCondition, timeout);
+		return getElement(driver, searchBy, searchValue, index, waitCondition, timeOutInSeconds);
 	}
 
-	public WebElement getElement(SearchContext source, SearchBy searchBy, String searchValue, int index, WaitCondition waitCondition, int timeout) throws TimeoutException
+	public WebElement getElement(SearchContext source, SearchBy searchBy, String searchValue, int index, WaitCondition waitCondition, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		InputValidationUtils.INSTANCE.validateMinimumValue(0, timeout, "timeout");
-
-		WebDriverWait wait = new WebDriverWait(driver, timeout);
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
 
 		ElementCreationInListPredicate elementCreationInListPredicate = new ElementCreationInListPredicate(this, source, searchBy, searchValue, index);
-		wait.until(elementCreationInListPredicate);
+		easyWebDriverWait.until(elementCreationInListPredicate);
 
 		WebElement webElement = elementCreationInListPredicate.getElements().get(index);
 
 		switch (waitCondition)
 		{
 			case Visibility_of_Element:
-				wait.until(ExpectedConditions.visibilityOf(webElement));
+				easyWebDriverWait.until(ExpectedConditions.visibilityOf(webElement));
 				break;
 
 			case Invisibility_of_Element:
-				wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(webElement)));
+				easyWebDriverWait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(webElement)));
 				break;
 
 			case Clickability_of_Element:
-				wait.until(ExpectedConditions.elementToBeClickable(webElement));
+				easyWebDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
 				break;
 
 			case Selected_Element:
-				wait.until(ExpectedConditions.elementToBeSelected(webElement));
+				easyWebDriverWait.until(ExpectedConditions.elementToBeSelected(webElement));
 				break;
 
 			case ELEMENT_CREATION:
@@ -123,26 +121,21 @@ public class DocumentWrapper extends DriverWrapper
 		return elements;
 	}
 
-	public void elementIsNotPartOfPage(SearchBy searchBy, String searchValue, int index, int timeout)
+	public void elementIsNotPartOfPage(SearchBy searchBy, String searchValue, int index, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		elementIsNotPartOfPage(driver, searchBy, searchValue, index, timeout);
+		elementIsNotPartOfPage(driver, searchBy, searchValue, index, timeOutInSeconds);
 	}
 
-	public void elementIsNotPartOfPage(SearchContext source, SearchBy searchBy, String searchValue, int index, int timeout) throws TimeoutException
+	public void elementIsNotPartOfPage(SearchContext source, SearchBy searchBy, String searchValue, int index, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-
-		InputValidationUtils.INSTANCE.validateMinimumValue(0, timeout, "timeout");
-
-		WebDriverWait wait = new WebDriverWait(driver, timeout);
-		wait.until(new ElementNotExistPredicate(this, source, searchBy, searchValue, index));
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
+		easyWebDriverWait.until(new ElementNotExistPredicate(this, source, searchBy, searchValue, index));
 	}
 
-	public void waitForPageLoad(int timeout) throws TimeoutException
+	public void waitForPageLoad(int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		InputValidationUtils.INSTANCE.validateMinimumValue(0, timeout, "timeout");
-
-		WebDriverWait wait = new WebDriverWait(driver, timeout);
-		wait.until(new PageReadyPredicate());
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
+		easyWebDriverWait.until(new PageReadyPredicate());
 	}
 
 	public void switchToOriginalFrame()

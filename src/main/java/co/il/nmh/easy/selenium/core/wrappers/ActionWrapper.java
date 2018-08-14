@@ -6,7 +6,6 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -14,13 +13,13 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import co.il.nmh.easy.selenium.core.DriverWrapper;
+import co.il.nmh.easy.selenium.core.EasyWebDriverWait;
 import co.il.nmh.easy.selenium.enums.AlertAction;
 import co.il.nmh.easy.selenium.enums.MouseButton;
 import co.il.nmh.easy.selenium.enums.SelectType;
-import co.il.nmh.easy.selenium.utils.InputValidationUtils;
+import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 
 /**
  * @author Maor Hamami
@@ -119,13 +118,11 @@ public class ActionWrapper extends DriverWrapper
 		return answer;
 	}
 
-	public void handleAlert(AlertAction alertAction, int timeout) throws TimeoutException
+	public void handleAlert(AlertAction alertAction, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		InputValidationUtils.INSTANCE.validateMinimumValue(0, timeout, "timeout");
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
 
-		WebDriverWait wait = new WebDriverWait(driver, timeout);
-
-		Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+		Alert alert = easyWebDriverWait.until(ExpectedConditions.alertIsPresent());
 
 		switch (alertAction)
 		{
@@ -140,14 +137,13 @@ public class ActionWrapper extends DriverWrapper
 
 	}
 
-	public void authentication(String username, String password, int timeout) throws TimeoutException
+	public void authentication(String username, String password, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		InputValidationUtils.INSTANCE.validateMinimumValue(0, timeout, "timeout");
-
 		if (driver instanceof InternetExplorerDriver)
 		{
-			WebDriverWait wait = new WebDriverWait(driver, timeout);
-			Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+			EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
+
+			Alert alert = easyWebDriverWait.until(ExpectedConditions.alertIsPresent());
 			alert.authenticateUsing(new UserAndPassword(username, password));
 		}
 
@@ -155,8 +151,9 @@ public class ActionWrapper extends DriverWrapper
 		{
 			try
 			{
-				WebDriverWait wait = new WebDriverWait(driver, 0);
-				Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+				EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, 0);
+
+				Alert alert = easyWebDriverWait.until(ExpectedConditions.alertIsPresent());
 				alert.dismiss();
 			}
 
@@ -182,7 +179,7 @@ public class ActionWrapper extends DriverWrapper
 
 			String loginUrl = protocol + username + ":" + password + "@" + baseURL.substring(i);
 
-			navigateWrapper.navigate(loginUrl, timeout);
+			navigateWrapper.navigate(loginUrl, timeOutInSeconds);
 		}
 	}
 

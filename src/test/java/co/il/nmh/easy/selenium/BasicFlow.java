@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import co.il.nmh.easy.selenium.enums.AlertAction;
 import co.il.nmh.easy.selenium.enums.BrowserType;
 import co.il.nmh.easy.selenium.enums.MouseButton;
+import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 import co.il.nmh.easy.selenium.utils.SearchBy;
 import co.il.nmh.easy.selenium.utils.WaitCondition;
 
@@ -17,25 +18,25 @@ import co.il.nmh.easy.selenium.utils.WaitCondition;
 public class BasicFlow
 {
 	@Test
-	public void test()
+	public void test() throws SeleniumActionTimeout
 	{
 		EasySeleniumBrowser easySeleniumBrowser = new EasySeleniumBrowser(BrowserType.Chrome);
 
 		try
 		{
-			easySeleniumBrowser.getNavigator().navigate("google.com", 10);
+			easySeleniumBrowser.navigator().navigate("google.com", 10);
 
-			WebElement searchBox = easySeleniumBrowser.getDocument().getElement(SearchBy.ID, "lst-ib", 0, WaitCondition.ELEMENT_CREATION, 5);
-			WebElement searchButton = easySeleniumBrowser.getDocument().getElement(SearchBy.Name, "btnK", 0, WaitCondition.ELEMENT_CREATION, 5);
+			WebElement searchBox = easySeleniumBrowser.document().getElement(SearchBy.ID, "lst-ib", 0, WaitCondition.ELEMENT_CREATION, 5);
+			WebElement searchButton = easySeleniumBrowser.document().getElement(SearchBy.Name, "btnK", 0, WaitCondition.ELEMENT_CREATION, 5);
 
-			easySeleniumBrowser.getAction().setTextboxValue(searchBox, "easy-selenium");
-			easySeleniumBrowser.getAction().click(searchButton, MouseButton.Left);
+			easySeleniumBrowser.action().setTextboxValue(searchBox, "easy-selenium");
+			easySeleniumBrowser.action().click(searchButton, MouseButton.Left);
 
-			String execJs = easySeleniumBrowser.getAction().execJs("return document.getElementById('resultStats').innerHTML");
+			String execJs = easySeleniumBrowser.action().execJs("return document.getElementById('resultStats').innerHTML");
 			Assert.assertNotNull(execJs);
 
-			easySeleniumBrowser.getAction().execJs("alert('test')");
-			easySeleniumBrowser.getAction().handleAlert(AlertAction.DISMISS, 5);
+			easySeleniumBrowser.action().execJs("alert('test')");
+			easySeleniumBrowser.action().handleAlert(AlertAction.DISMISS, 5);
 		}
 		finally
 		{

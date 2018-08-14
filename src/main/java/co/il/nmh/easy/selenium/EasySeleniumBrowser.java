@@ -10,13 +10,11 @@ import co.il.nmh.easy.selenium.core.wrappers.NavigateWrapper;
 import co.il.nmh.easy.selenium.core.wrappers.VerifyWrapper;
 import co.il.nmh.easy.selenium.core.wrappers.WindowWrapper;
 import co.il.nmh.easy.selenium.enums.BrowserType;
-import lombok.Getter;
 
 /**
  * @author Maor Hamami
  */
 
-@Getter
 public class EasySeleniumBrowser
 {
 	private WebDriver driver;
@@ -65,5 +63,35 @@ public class EasySeleniumBrowser
 	{
 		driver.close();
 		driver.quit();
+	}
+
+	public WebDriver driver()
+	{
+		return driver;
+	}
+
+	public ActionWrapper action()
+	{
+		return action;
+	}
+
+	public DocumentWrapper document()
+	{
+		return document;
+	}
+
+	public NavigateWrapper navigator()
+	{
+		return navigator;
+	}
+
+	public VerifyWrapper veirfy()
+	{
+		return veirfy;
+	}
+
+	public WindowWrapper window()
+	{
+		return window;
 	}
 }

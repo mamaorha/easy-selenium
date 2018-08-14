@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import co.il.nmh.easy.selenium.core.DriverWrapper;
+import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 import co.il.nmh.easy.selenium.utils.InputValidationUtils;
 
 /**
@@ -25,22 +26,29 @@ public class NavigateWrapper extends DriverWrapper
 		driver.navigate().refresh();
 	}
 
-	public void navigate(String url, int timeout) throws TimeoutException
+	public void navigate(String url, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		InputValidationUtils.INSTANCE.validateMinimumValue(1, timeout, "timeout");
+		InputValidationUtils.INSTANCE.validateMinimumValue(1, timeOutInSeconds, "timeOutInSeconds");
 
-		driver.manage().timeouts().pageLoadTimeout(timeout, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(timeOutInSeconds, TimeUnit.SECONDS);
 
 		if (!url.toLowerCase().startsWith("http"))
 		{
 			url = "http://" + url;
 		}
 
-		driver.navigate().to(url);
-
-		if (driver instanceof InternetExplorerDriver && driver.getTitle().contains("Certificate"))
+		try
 		{
-			driver.navigate().to("javascript:document.getElementById('overridelink').click()");
+			driver.navigate().to(url);
+
+			if (driver instanceof InternetExplorerDriver && driver.getTitle().contains("Certificate"))
+			{
+				driver.navigate().to("javascript:document.getElementById('overridelink').click()");
+			}
+		}
+		catch (TimeoutException e)
+		{
+			throw new SeleniumActionTimeout(e);
 		}
 	}
 
