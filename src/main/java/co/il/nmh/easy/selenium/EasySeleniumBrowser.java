@@ -63,8 +63,22 @@ public class EasySeleniumBrowser
 
 	public void close()
 	{
-		driver.close();
-		driver.quit();
+		try
+		{
+			driver.close();
+			driver.quit();
+		}
+		catch (Exception e)
+		{
+			try
+			{
+				driver.quit();
+				driver.close();
+			}
+			catch (Exception ex)
+			{
+			}
+		}
 	}
 
 	public WebDriver driver()
