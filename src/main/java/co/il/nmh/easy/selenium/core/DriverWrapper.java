@@ -1,6 +1,6 @@
 package co.il.nmh.easy.selenium.core;
 
-import org.openqa.selenium.WebDriver;
+import co.il.nmh.easy.selenium.EasySeleniumBrowser;
 
 /**
  * @author Maor Hamami
@@ -8,10 +8,10 @@ import org.openqa.selenium.WebDriver;
 
 public abstract class DriverWrapper
 {
-	protected WebDriver driver;
+	protected EasySeleniumBrowser easySeleniumBrowser;
 
-	public DriverWrapper(WebDriver driver)
+	public DriverWrapper(EasySeleniumBrowser easySeleniumBrowser)
 	{
-		this.driver = driver;
+		this.easySeleniumBrowser = easySeleniumBrowser;
 	}
 }

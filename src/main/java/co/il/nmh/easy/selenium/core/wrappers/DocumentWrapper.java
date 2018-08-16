@@ -4,19 +4,17 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
+import co.il.nmh.easy.selenium.EasySeleniumBrowser;
 import co.il.nmh.easy.selenium.core.DriverWrapper;
 import co.il.nmh.easy.selenium.core.EasyWebDriverWait;
 import co.il.nmh.easy.selenium.core.predicate.ElementCreationInListPredicate;
-import co.il.nmh.easy.selenium.core.predicate.ElementNotExistPredicate;
 import co.il.nmh.easy.selenium.core.predicate.PageReadyPredicate;
 import co.il.nmh.easy.selenium.enums.SearchBy;
 import co.il.nmh.easy.selenium.enums.WaitCondition;
 import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
-import co.il.nmh.easy.selenium.utils.InputValidationUtils;
 
 /**
  * @author Maor Hamami
@@ -24,19 +22,19 @@ import co.il.nmh.easy.selenium.utils.InputValidationUtils;
 
 public class DocumentWrapper extends DriverWrapper
 {
-	public DocumentWrapper(WebDriver driver)
+	public DocumentWrapper(EasySeleniumBrowser easySeleniumBrowser)
 	{
-		super(driver);
+		super(easySeleniumBrowser);
 	}
 
 	public WebElement getElement(SearchBy searchBy, String searchValue, int index, WaitCondition waitCondition, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		return getElement(driver, searchBy, searchValue, index, waitCondition, timeOutInSeconds);
+		return getElement(easySeleniumBrowser.driver(), searchBy, searchValue, index, waitCondition, timeOutInSeconds);
 	}
 
 	public WebElement getElement(SearchContext source, SearchBy searchBy, String searchValue, int index, WaitCondition waitCondition, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(easySeleniumBrowser.driver(), timeOutInSeconds);
 
 		ElementCreationInListPredicate elementCreationInListPredicate = new ElementCreationInListPredicate(this, source, searchBy, searchValue, index);
 		easyWebDriverWait.until(elementCreationInListPredicate);
@@ -70,7 +68,7 @@ public class DocumentWrapper extends DriverWrapper
 
 	public List<WebElement> getElements(SearchBy searchBy, String searchValue)
 	{
-		return getElements(driver, searchBy, searchValue);
+		return getElements(easySeleniumBrowser.driver(), searchBy, searchValue);
 	}
 
 	public List<WebElement> getElements(SearchContext source, SearchBy searchBy, String searchValue)
@@ -121,43 +119,14 @@ public class DocumentWrapper extends DriverWrapper
 		return elements;
 	}
 
-	public void elementIsNotPartOfPage(SearchBy searchBy, String searchValue, int index, int timeOutInSeconds) throws SeleniumActionTimeout
-	{
-		elementIsNotPartOfPage(driver, searchBy, searchValue, index, timeOutInSeconds);
-	}
-
-	public void elementIsNotPartOfPage(SearchContext source, SearchBy searchBy, String searchValue, int index, int timeOutInSeconds) throws SeleniumActionTimeout
-	{
-		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
-		easyWebDriverWait.until(new ElementNotExistPredicate(this, source, searchBy, searchValue, index));
-	}
-
 	public void waitForPageLoad(int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(easySeleniumBrowser.driver(), timeOutInSeconds);
 		easyWebDriverWait.until(new PageReadyPredicate());
 	}
 
 	public void switchToOriginalFrame()
 	{
-		this.driver.switchTo().defaultContent();
-	}
-
-	public void switchFrame(String index)
-	{
-		String[] indexes = index.split(",");
-
-		for (String currIndex : indexes)
-		{
-			int indexInt = Integer.valueOf(currIndex);
-
-			InputValidationUtils.INSTANCE.validateMinimumValue(0, indexInt, "index");
-			driver = driver.switchTo().frame(indexInt);
-		}
-	}
-
-	public void switchFrame(WebElement element)
-	{
-		driver = driver.switchTo().frame(element);
+		this.easySeleniumBrowser.driver().switchTo().defaultContent();
 	}
 }

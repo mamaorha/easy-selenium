@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import co.il.nmh.easy.selenium.EasySeleniumBrowser;
 import co.il.nmh.easy.selenium.core.DriverWrapper;
+import co.il.nmh.easy.selenium.core.EasyWebDriverWait;
 import co.il.nmh.easy.selenium.core.predicate.AbstractComparePredicate;
 import co.il.nmh.easy.selenium.core.predicate.CompareJSNumberPredicate;
 import co.il.nmh.easy.selenium.core.predicate.CompareJSStringPredicate;
@@ -20,12 +22,15 @@ import co.il.nmh.easy.selenium.core.predicate.CompareNumberAdvancePredicate;
 import co.il.nmh.easy.selenium.core.predicate.CompareNumberPredicate;
 import co.il.nmh.easy.selenium.core.predicate.CompareStringAdvancePredicate;
 import co.il.nmh.easy.selenium.core.predicate.CompareStringPredicate;
+import co.il.nmh.easy.selenium.core.predicate.ElementNotExistPredicate;
 import co.il.nmh.easy.selenium.data.ImageVerificationResponse;
 import co.il.nmh.easy.selenium.data.VerificationResponse;
 import co.il.nmh.easy.selenium.enums.AttributeCompare;
 import co.il.nmh.easy.selenium.enums.AttributeCompareAdvance;
 import co.il.nmh.easy.selenium.enums.CompareNumber;
 import co.il.nmh.easy.selenium.enums.CompareString;
+import co.il.nmh.easy.selenium.enums.SearchBy;
+import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 import co.il.nmh.easy.selenium.utils.InputValidationUtils;
 
 /**
@@ -34,17 +39,9 @@ import co.il.nmh.easy.selenium.utils.InputValidationUtils;
 
 public class VerifyWrapper extends DriverWrapper
 {
-	protected ActionWrapper actionWrapper;
-	protected NavigateWrapper navigateWrapper;
-	protected WindowWrapper windowWrapper;
-
-	public VerifyWrapper(WebDriver driver, ActionWrapper actionWrapper, NavigateWrapper navigateWrapper, WindowWrapper windowWrapper)
+	public VerifyWrapper(EasySeleniumBrowser easySeleniumBrowser)
 	{
-		super(driver);
-
-		this.actionWrapper = actionWrapper;
-		this.navigateWrapper = navigateWrapper;
-		this.windowWrapper = windowWrapper;
+		super(easySeleniumBrowser);
 	}
 
 	public VerificationResponse verifyNumber(WebElement element, AttributeCompare attributeCompare, CompareNumber comperator, float expectedValue, int timeoutForVerification)
@@ -90,7 +87,7 @@ public class VerifyWrapper extends DriverWrapper
 			@Override
 			public String currValue()
 			{
-				return navigateWrapper.getTitle();
+				return easySeleniumBrowser.navigator().getTitle();
 			}
 		};
 
@@ -104,7 +101,7 @@ public class VerifyWrapper extends DriverWrapper
 			@Override
 			public String currValue()
 			{
-				return navigateWrapper.getUrl();
+				return easySeleniumBrowser.navigator().getUrl();
 			}
 		};
 
@@ -115,7 +112,7 @@ public class VerifyWrapper extends DriverWrapper
 	{
 		InputValidationUtils.INSTANCE.validateMinimumValue(0, matchPercent, "matchPercent");
 
-		BufferedImage screenshot = windowWrapper.screenshot();
+		BufferedImage screenshot = easySeleniumBrowser.window().screenshot();
 
 		ImageVerificationResponse imageVerificationResponse = new ImageVerificationResponse();
 
@@ -173,7 +170,7 @@ public class VerifyWrapper extends DriverWrapper
 	{
 		InputValidationUtils.INSTANCE.validateMinimumValue(0, timeoutForVerification, "timeoutForVerification");
 
-		WebDriverWait wait = new WebDriverWait(driver, timeoutForVerification);
+		WebDriverWait wait = new WebDriverWait(easySeleniumBrowser.driver(), timeoutForVerification);
 
 		VerificationResponse verificationResponse = new VerificationResponse();
 
@@ -188,6 +185,31 @@ public class VerifyWrapper extends DriverWrapper
 		}
 
 		verificationResponse.setInfo(predicate.message(verificationResponse.isSuccess()));
+
+		return verificationResponse;
+	}
+
+	public VerificationResponse elementIsNotPartOfPage(SearchBy searchBy, String searchValue, int index, int timeOutInSeconds)
+	{
+		return elementIsNotPartOfPage(easySeleniumBrowser.driver(), searchBy, searchValue, index, timeOutInSeconds);
+	}
+
+	public VerificationResponse elementIsNotPartOfPage(SearchContext source, SearchBy searchBy, String searchValue, int index, int timeOutInSeconds)
+	{
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(easySeleniumBrowser.driver(), timeOutInSeconds);
+
+		VerificationResponse verificationResponse = new VerificationResponse();
+
+		try
+		{
+			easyWebDriverWait.until(new ElementNotExistPredicate(easySeleniumBrowser.document(), source, searchBy, searchValue, index));
+			verificationResponse.setSuccess(true);
+			verificationResponse.setInfo("element is not part of the document");
+		}
+		catch (SeleniumActionTimeout ex)
+		{
+			verificationResponse.setInfo("element is part of the document");
+		}
 
 		return verificationResponse;
 	}

@@ -2,6 +2,7 @@ package co.il.nmh.easy.selenium;
 
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import co.il.nmh.easy.selenium.core.WebDriverManager;
 import co.il.nmh.easy.selenium.core.wrappers.ActionWrapper;
@@ -10,6 +11,7 @@ import co.il.nmh.easy.selenium.core.wrappers.NavigateWrapper;
 import co.il.nmh.easy.selenium.core.wrappers.VerifyWrapper;
 import co.il.nmh.easy.selenium.core.wrappers.WindowWrapper;
 import co.il.nmh.easy.selenium.enums.BrowserType;
+import co.il.nmh.easy.selenium.utils.InputValidationUtils;
 
 /**
  * @author Maor Hamami
@@ -33,11 +35,11 @@ public class EasySeleniumBrowser
 	{
 		this.driver = driver;
 
-		this.document = new DocumentWrapper(driver);
-		this.navigator = new NavigateWrapper(driver);
-		this.window = new WindowWrapper(driver);
-		this.action = new ActionWrapper(driver, navigator);
-		this.veirfy = new VerifyWrapper(driver, action, navigator, window);
+		this.document = new DocumentWrapper(this);
+		this.navigator = new NavigateWrapper(this);
+		this.window = new WindowWrapper(this);
+		this.action = new ActionWrapper(this);
+		this.veirfy = new VerifyWrapper(this);
 	}
 
 	public boolean isAvailable()
@@ -93,5 +95,23 @@ public class EasySeleniumBrowser
 	public WindowWrapper window()
 	{
 		return window;
+	}
+
+	public void switchFrame(String index)
+	{
+		String[] indexes = index.split(",");
+
+		for (String currIndex : indexes)
+		{
+			int indexInt = Integer.valueOf(currIndex);
+
+			InputValidationUtils.INSTANCE.validateMinimumValue(0, indexInt, "index");
+			driver = driver.switchTo().frame(indexInt);
+		}
+	}
+
+	public void switchFrame(WebElement element)
+	{
+		driver = driver.switchTo().frame(element);
 	}
 }

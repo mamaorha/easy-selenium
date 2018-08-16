@@ -6,7 +6,6 @@ import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -14,6 +13,7 @@ import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 
+import co.il.nmh.easy.selenium.EasySeleniumBrowser;
 import co.il.nmh.easy.selenium.core.DriverWrapper;
 import co.il.nmh.easy.selenium.core.EasyWebDriverWait;
 import co.il.nmh.easy.selenium.enums.AlertAction;
@@ -27,18 +27,15 @@ import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 
 public class ActionWrapper extends DriverWrapper
 {
-	private NavigateWrapper navigateWrapper;
 
-	public ActionWrapper(WebDriver driver, NavigateWrapper navigateWrapper)
+	public ActionWrapper(EasySeleniumBrowser easySeleniumBrowser)
 	{
-		super(driver);
-
-		this.navigateWrapper = navigateWrapper;
+		super(easySeleniumBrowser);
 	}
 
 	public void setTextboxValue(WebElement element, String value)
 	{
-		JavascriptExecutor js = (JavascriptExecutor) driver;
+		JavascriptExecutor js = (JavascriptExecutor) easySeleniumBrowser.driver();
 
 		js.executeScript("arguments[0].focus();", element);
 
@@ -50,7 +47,7 @@ public class ActionWrapper extends DriverWrapper
 
 	public void click(WebElement element, MouseButton mouseButton)
 	{
-		Actions actions = new Actions(driver);
+		Actions actions = new Actions(easySeleniumBrowser.driver());
 
 		switch (mouseButton)
 		{
@@ -71,12 +68,12 @@ public class ActionWrapper extends DriverWrapper
 
 	public void scrollToElement(WebElement element)
 	{
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+		((JavascriptExecutor) easySeleniumBrowser.driver()).executeScript("arguments[0].scrollIntoView(true);", element);
 	}
 
 	public void focus(WebElement element, boolean focus)
 	{
-		JavascriptExecutor js = (JavascriptExecutor) driver;
+		JavascriptExecutor js = (JavascriptExecutor) easySeleniumBrowser.driver();
 
 		if (focus)
 		{
@@ -91,27 +88,27 @@ public class ActionWrapper extends DriverWrapper
 
 	public void mouseHover(WebElement element)
 	{
-		Actions action = new Actions(driver);
+		Actions action = new Actions(easySeleniumBrowser.driver());
 		action.moveToElement(element).build().perform();
 	}
 
 	public void dragAndDrop(WebElement element, int x, int y)
 	{
-		Actions actions = new Actions(driver);
+		Actions actions = new Actions(easySeleniumBrowser.driver());
 		actions.dragAndDropBy(element, x, y);
 	}
 
 	public void dragAndDrop(WebElement sourceElement, WebElement destinationElement)
 	{
-		Actions actions = new Actions(driver);
+		Actions actions = new Actions(easySeleniumBrowser.driver());
 		actions.dragAndDrop(sourceElement, destinationElement);
 	}
 
 	public String execJs(String script)
 	{
-		driver.switchTo().defaultContent();
+		easySeleniumBrowser.driver().switchTo().defaultContent();
 
-		JavascriptExecutor js = (JavascriptExecutor) driver;
+		JavascriptExecutor js = (JavascriptExecutor) easySeleniumBrowser.driver();
 		Object res = js.executeScript(script);
 
 		String answer = res != null ? res.toString() : null;
@@ -120,7 +117,7 @@ public class ActionWrapper extends DriverWrapper
 
 	public void handleAlert(AlertAction alertAction, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
+		EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(easySeleniumBrowser.driver(), timeOutInSeconds);
 
 		Alert alert = easyWebDriverWait.until(ExpectedConditions.alertIsPresent());
 
@@ -139,9 +136,9 @@ public class ActionWrapper extends DriverWrapper
 
 	public void authentication(String username, String password, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
-		if (driver instanceof InternetExplorerDriver)
+		if (easySeleniumBrowser.driver() instanceof InternetExplorerDriver)
 		{
-			EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, timeOutInSeconds);
+			EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(easySeleniumBrowser.driver(), timeOutInSeconds);
 
 			Alert alert = easyWebDriverWait.until(ExpectedConditions.alertIsPresent());
 			alert.authenticateUsing(new UserAndPassword(username, password));
@@ -151,7 +148,7 @@ public class ActionWrapper extends DriverWrapper
 		{
 			try
 			{
-				EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(driver, 0);
+				EasyWebDriverWait easyWebDriverWait = new EasyWebDriverWait(easySeleniumBrowser.driver(), 0);
 
 				Alert alert = easyWebDriverWait.until(ExpectedConditions.alertIsPresent());
 				alert.dismiss();
@@ -163,7 +160,7 @@ public class ActionWrapper extends DriverWrapper
 
 			int i = 0;
 
-			String baseURL = navigateWrapper.getUrl();
+			String baseURL = easySeleniumBrowser.navigator().getUrl();
 			String protocol = "http://";
 
 			if (baseURL.toLowerCase().startsWith("https://"))
@@ -179,13 +176,13 @@ public class ActionWrapper extends DriverWrapper
 
 			String loginUrl = protocol + username + ":" + password + "@" + baseURL.substring(i);
 
-			navigateWrapper.navigate(loginUrl, timeOutInSeconds);
+			easySeleniumBrowser.navigator().navigate(loginUrl, timeOutInSeconds);
 		}
 	}
 
 	public void sendKeys(String keys)
 	{
-		driver.switchTo().activeElement().sendKeys(keys);
+		easySeleniumBrowser.driver().switchTo().activeElement().sendKeys(keys);
 	}
 
 	public void sendKeys(WebElement element, String keys)
@@ -195,7 +192,7 @@ public class ActionWrapper extends DriverWrapper
 
 	public void sendKey(Keys key)
 	{
-		driver.switchTo().activeElement().sendKeys(key);
+		easySeleniumBrowser.driver().switchTo().activeElement().sendKeys(key);
 	}
 
 	public void sendKey(WebElement element, Keys key)
@@ -256,7 +253,7 @@ public class ActionWrapper extends DriverWrapper
 				return false;
 			}
 
-			JavascriptExecutor js = (JavascriptExecutor) driver;
+			JavascriptExecutor js = (JavascriptExecutor) easySeleniumBrowser.driver();
 			js.executeScript("arguments[0].click();", element);
 			js.executeScript("arguments[0].click();", element);
 		}
