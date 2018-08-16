@@ -41,13 +41,13 @@ public class WebDriverManager
 
 		switch (browser)
 		{
-			case Chrome:
+			case CHROME:
 				driver = buildChrome(proxy);
 				break;
-			case FireFox:
+			case FIREFOX:
 				driver = buildFirefox();
 				break;
-			case IExplorer:
+			case IEXPLORER:
 				driver = buildIExpolorer(proxy);
 				break;
 		}

@@ -6,5 +6,5 @@ package co.il.nmh.easy.selenium.enums;
 
 public enum MouseButton
 {
-	Left, Right, Double_Click
+	LEFT, RIGHT, DOUBLE_CLICK
 }

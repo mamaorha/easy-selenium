@@ -7,9 +7,9 @@ import org.openqa.selenium.WebElement;
 import co.il.nmh.easy.selenium.enums.AlertAction;
 import co.il.nmh.easy.selenium.enums.BrowserType;
 import co.il.nmh.easy.selenium.enums.MouseButton;
+import co.il.nmh.easy.selenium.enums.SearchBy;
+import co.il.nmh.easy.selenium.enums.WaitCondition;
 import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
-import co.il.nmh.easy.selenium.utils.SearchBy;
-import co.il.nmh.easy.selenium.utils.WaitCondition;
 
 /**
  * @author Maor Hamami
@@ -20,7 +20,7 @@ public class BasicFlow
 	@Test
 	public void test() throws SeleniumActionTimeout
 	{
-		EasySeleniumBrowser easySeleniumBrowser = new EasySeleniumBrowser(BrowserType.Chrome);
+		EasySeleniumBrowser easySeleniumBrowser = new EasySeleniumBrowser(BrowserType.CHROME);
 
 		try
 		{
@@ -30,7 +30,7 @@ public class BasicFlow
 			WebElement searchButton = easySeleniumBrowser.document().getElement(SearchBy.Name, "btnK", 0, WaitCondition.ELEMENT_CREATION, 5);
 
 			easySeleniumBrowser.action().setTextboxValue(searchBox, "easy-selenium");
-			easySeleniumBrowser.action().click(searchButton, MouseButton.Left);
+			easySeleniumBrowser.action().click(searchButton, MouseButton.LEFT);
 
 			String execJs = easySeleniumBrowser.action().execJs("return document.getElementById('resultStats').innerHTML");
 			Assert.assertNotNull(execJs);

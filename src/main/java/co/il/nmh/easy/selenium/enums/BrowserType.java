@@ -6,5 +6,5 @@ package co.il.nmh.easy.selenium.enums;
 
 public enum BrowserType
 {
-	Chrome, FireFox, IExplorer
+	CHROME, FIREFOX, IEXPLORER
 }

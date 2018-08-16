@@ -6,9 +6,9 @@ import org.openqa.selenium.WebDriver;
 import com.google.common.base.Predicate;
 
 import co.il.nmh.easy.selenium.core.wrappers.DocumentWrapper;
+import co.il.nmh.easy.selenium.enums.SearchBy;
+import co.il.nmh.easy.selenium.enums.WaitCondition;
 import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
-import co.il.nmh.easy.selenium.utils.SearchBy;
-import co.il.nmh.easy.selenium.utils.WaitCondition;
 
 /**
  * @author Maor Hamami

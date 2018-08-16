@@ -54,16 +54,16 @@ public class ActionWrapper extends DriverWrapper
 
 		switch (mouseButton)
 		{
-			case Left:
+			case LEFT:
 				actions.moveToElement(element).click().perform();
 				break;
 
-			case Right:
+			case RIGHT:
 				actions.moveToElement(element);
 				actions.contextClick(element).build().perform();
 				break;
 
-			case Double_Click:
+			case DOUBLE_CLICK:
 				actions.moveToElement(element).doubleClick().perform();
 				break;
 		}

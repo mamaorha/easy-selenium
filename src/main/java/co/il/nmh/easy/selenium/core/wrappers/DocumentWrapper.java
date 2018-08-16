@@ -13,10 +13,10 @@ import co.il.nmh.easy.selenium.core.EasyWebDriverWait;
 import co.il.nmh.easy.selenium.core.predicate.ElementCreationInListPredicate;
 import co.il.nmh.easy.selenium.core.predicate.ElementNotExistPredicate;
 import co.il.nmh.easy.selenium.core.predicate.PageReadyPredicate;
+import co.il.nmh.easy.selenium.enums.SearchBy;
+import co.il.nmh.easy.selenium.enums.WaitCondition;
 import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
 import co.il.nmh.easy.selenium.utils.InputValidationUtils;
-import co.il.nmh.easy.selenium.utils.SearchBy;
-import co.il.nmh.easy.selenium.utils.WaitCondition;
 
 /**
  * @author Maor Hamami
@@ -45,19 +45,19 @@ public class DocumentWrapper extends DriverWrapper
 
 		switch (waitCondition)
 		{
-			case Visibility_of_Element:
+			case VISIBILITY_OF_ELEMENT:
 				easyWebDriverWait.until(ExpectedConditions.visibilityOf(webElement));
 				break;
 
-			case Invisibility_of_Element:
+			case INVISIBILITY_OF_ELEMENT:
 				easyWebDriverWait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(webElement)));
 				break;
 
-			case Clickability_of_Element:
+			case CLICKABILITY_OF_ELEMENT:
 				easyWebDriverWait.until(ExpectedConditions.elementToBeClickable(webElement));
 				break;
 
-			case Selected_Element:
+			case SELECTED_ELEMENT:
 				easyWebDriverWait.until(ExpectedConditions.elementToBeSelected(webElement));
 				break;
 
@@ -77,9 +77,9 @@ public class DocumentWrapper extends DriverWrapper
 	{
 		List<WebElement> elements = null;
 
-		if (searchBy == SearchBy.Class_Name && searchValue.contains(" "))
+		if (searchBy == SearchBy.CLASS_NAME && searchValue.contains(" "))
 		{
-			searchBy = SearchBy.CSS_Selector;
+			searchBy = SearchBy.CSS_SELECTOR;
 			searchValue = "*[class^='" + searchValue + "']";
 		}
 
@@ -93,27 +93,27 @@ public class DocumentWrapper extends DriverWrapper
 				elements = source.findElements(By.name(searchValue));
 				break;
 
-			case Tag_Name:
+			case TAG_NAME:
 				elements = source.findElements(By.tagName(searchValue));
 				break;
 
-			case Class_Name:
+			case CLASS_NAME:
 				elements = source.findElements(By.className(searchValue));
 				break;
 
-			case CSS_Selector:
+			case CSS_SELECTOR:
 				elements = source.findElements(By.cssSelector(searchValue));
 				break;
 
-			case Link_Text:
+			case LINK_TEXT:
 				elements = source.findElements(By.linkText(searchValue));
 				break;
 
-			case Partial_Link:
+			case PARTIAL_LINK:
 				elements = source.findElements(By.partialLinkText(searchValue));
 				break;
 
-			case XPath:
+			case XPATH:
 				elements = source.findElements(By.xpath(searchValue));
 				break;
 		}

@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 import com.google.common.base.Predicate;
 
 import co.il.nmh.easy.selenium.core.wrappers.DocumentWrapper;
-import co.il.nmh.easy.selenium.utils.SearchBy;
+import co.il.nmh.easy.selenium.enums.SearchBy;
 
 /**
  * @author Maor Hamami
