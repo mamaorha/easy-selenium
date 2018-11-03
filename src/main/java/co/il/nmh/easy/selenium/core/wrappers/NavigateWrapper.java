@@ -26,6 +26,17 @@ public class NavigateWrapper extends DriverWrapper
 		easySeleniumBrowser.driver().navigate().refresh();
 	}
 
+	public void navigateWithoutException(String url, int timeOutInSeconds)
+	{
+		try
+		{
+			navigate(url, timeOutInSeconds);
+		}
+		catch (SeleniumActionTimeout e)
+		{
+		}
+	}
+
 	public void navigate(String url, int timeOutInSeconds) throws SeleniumActionTimeout
 	{
 		InputValidationUtils.INSTANCE.validateMinimumValue(1, timeOutInSeconds, "timeOutInSeconds");

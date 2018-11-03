@@ -81,6 +81,8 @@ public class WebDriverManager
 		capabilities.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
 
 		System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
+		System.setProperty("webdriver.chrome.args", "--disable-logging");
+		System.setProperty("webdriver.chrome.silentOutput", "true");
 
 		return new ChromeDriver(capabilities);
 	}
