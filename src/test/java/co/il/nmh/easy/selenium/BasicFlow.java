@@ -1,12 +1,14 @@
 package co.il.nmh.easy.selenium;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import co.il.nmh.easy.selenium.enums.AlertAction;
 import co.il.nmh.easy.selenium.enums.BrowserType;
-import co.il.nmh.easy.selenium.enums.MouseButton;
 import co.il.nmh.easy.selenium.enums.SearchBy;
 import co.il.nmh.easy.selenium.enums.WaitCondition;
 import co.il.nmh.easy.selenium.exceptions.SeleniumActionTimeout;
@@ -26,14 +28,13 @@ public class BasicFlow
 		{
 			easySeleniumBrowser.navigator().navigate("google.com", 10);
 
-			WebElement searchBox = easySeleniumBrowser.document().getElement(SearchBy.ID, "lst-ib", 0, WaitCondition.ELEMENT_CREATION, 5);
-			WebElement searchButton = easySeleniumBrowser.document().getElement(SearchBy.Name, "btnK", 0, WaitCondition.ELEMENT_CREATION, 5);
+			WebElement searchBox = easySeleniumBrowser.document().getElement(SearchBy.Name, "q", 0, WaitCondition.ELEMENT_CREATION, 5);
 
 			easySeleniumBrowser.action().setTextboxValue(searchBox, "easy-selenium");
-			easySeleniumBrowser.action().click(searchButton, MouseButton.LEFT);
+			easySeleniumBrowser.action().focus(searchBox, true).sendKey(Keys.ENTER);
 
-			String execJs = easySeleniumBrowser.action().execJs("return document.getElementById('resultStats').innerHTML");
-			Assert.assertNotNull(execJs);
+			Optional<Object> execJs = easySeleniumBrowser.action().execJs("return document.getElementById('resultStats').innerHTML");
+			Assert.assertNotNull(execJs.get());
 
 			easySeleniumBrowser.action().execJs("alert('test')");
 			easySeleniumBrowser.action().handleAlert(AlertAction.DISMISS, 5);

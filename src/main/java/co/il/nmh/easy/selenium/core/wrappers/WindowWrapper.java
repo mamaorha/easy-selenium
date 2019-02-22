@@ -1,15 +1,8 @@
 package co.il.nmh.easy.selenium.core.wrappers;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
-
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver.Window;
 
 import co.il.nmh.easy.selenium.EasySeleniumBrowser;
 import co.il.nmh.easy.selenium.core.DriverWrapper;
@@ -26,31 +19,58 @@ public class WindowWrapper extends DriverWrapper
 		super(easySeleniumBrowser);
 	}
 
-	public void setSize(int width, int height)
+	/**
+	 * Use this method when you wish to set the size of the browser window. This will change the outer window dimension, not just the view port, synonymous to window.resizeTo() in JS.
+	 * 
+	 * @param width
+	 *            - window new width
+	 * @param height
+	 *            - window new height
+	 */
+	public WindowWrapper setSize(int width, int height)
 	{
-		InputValidationUtils.INSTANCE.validateMinimumValue(1, width, "width");
-		InputValidationUtils.INSTANCE.validateMinimumValue(1, height, "height");
+		InputValidationUtils.INSTANCE.validateMinimumValue(0, width, "width");
+		InputValidationUtils.INSTANCE.validateMinimumValue(0, height, "height");
 
-		easySeleniumBrowser.driver().manage().window().setSize(new Dimension(width, height));
+		getDriverWindow().setSize(new Dimension(width, height));
+		return this;
 	}
 
-	public void fullScreen()
+	/**
+	 * Use this method when you wish to make the browser window on fullscreen if it is not already fullscreen
+	 */
+	public WindowWrapper fullScreen()
 	{
-		easySeleniumBrowser.driver().manage().window().fullscreen();
+		getDriverWindow().fullscreen();
+		return this;
 	}
 
-	public void maximize()
+	/**
+	 * Use this method when you wish to maximize the browser window if it is not already maximized
+	 */
+	public WindowWrapper maximize()
 	{
-		easySeleniumBrowser.driver().manage().window().maximize();
+		getDriverWindow().maximize();
+		return this;
 	}
 
-	public BufferedImage screenshot() throws IOException
+	/**
+	 * Use this method to set the position of the browser window. This is relative to the upper left corner of the screen, synonymous to window.moveTo() in JS.
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public WindowWrapper setPosition(int x, int y)
 	{
-		byte[] screenshotBytes = ((TakesScreenshot) easySeleniumBrowser.driver()).getScreenshotAs(OutputType.BYTES);
+		getDriverWindow().setPosition(new Point(x, y));
+		return this;
+	}
 
-		InputStream in = new ByteArrayInputStream(screenshotBytes);
-		BufferedImage bufferedImage = ImageIO.read(in);
-
-		return bufferedImage;
+	/**
+	 * @return the interface for managing the current window, given by Selenium webDriver.
+	 */
+	public Window getDriverWindow()
+	{
+		return easySeleniumBrowser.driver().manage().window();
 	}
 }

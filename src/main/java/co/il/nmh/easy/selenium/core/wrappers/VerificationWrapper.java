@@ -37,9 +37,9 @@ import co.il.nmh.easy.selenium.utils.InputValidationUtils;
  * @author Maor Hamami
  */
 
-public class VerifyWrapper extends DriverWrapper
+public class VerificationWrapper extends DriverWrapper
 {
-	public VerifyWrapper(EasySeleniumBrowser easySeleniumBrowser)
+	public VerificationWrapper(EasySeleniumBrowser easySeleniumBrowser)
 	{
 		super(easySeleniumBrowser);
 	}
@@ -87,7 +87,7 @@ public class VerifyWrapper extends DriverWrapper
 			@Override
 			public String currValue()
 			{
-				return easySeleniumBrowser.navigator().getTitle();
+				return easySeleniumBrowser.getTitle();
 			}
 		};
 
@@ -101,7 +101,7 @@ public class VerifyWrapper extends DriverWrapper
 			@Override
 			public String currValue()
 			{
-				return easySeleniumBrowser.navigator().getUrl();
+				return easySeleniumBrowser.getUrl();
 			}
 		};
 
@@ -112,7 +112,7 @@ public class VerifyWrapper extends DriverWrapper
 	{
 		InputValidationUtils.INSTANCE.validateMinimumValue(0, matchPercent, "matchPercent");
 
-		BufferedImage screenshot = easySeleniumBrowser.window().screenshot();
+		BufferedImage screenshot = easySeleniumBrowser.screenshot();
 
 		ImageVerificationResponse imageVerificationResponse = new ImageVerificationResponse();
 

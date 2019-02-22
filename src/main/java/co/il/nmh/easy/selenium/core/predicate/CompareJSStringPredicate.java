@@ -22,6 +22,6 @@ public class CompareJSStringPredicate extends CompareStringPredicate
 	@Override
 	public String currValue()
 	{
-		return actionWrapper.execJs(script);
+		return actionWrapper.execJs(script).map((res) -> res.toString()).orElse(null);
 	}
 }
